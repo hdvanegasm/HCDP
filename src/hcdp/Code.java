@@ -22,12 +22,12 @@ public class Code {
         this.bitNumber = numeroBits;
     }
 
-    public char[] getDatos() {
+    public char[] getData() {
         return data;
     }
 
-    public void setDatos(char[] datos) {
-        this.data = datos;
+    public void setDatos(char[] data) {
+        this.data = data;
     }
 
     public Code(int bitNumber) {
@@ -36,8 +36,8 @@ public class Code {
         if (doubleLength - (int) doubleLength > 0) {
             doubleLength += 1;
         }
-        int longitudArray = (int) doubleLength;
-        data = new char[longitudArray];
+        int lengthArray = (int) doubleLength;
+        data = new char[lengthArray];
     }
 
 }

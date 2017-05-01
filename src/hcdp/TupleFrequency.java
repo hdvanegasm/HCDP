@@ -32,7 +32,7 @@ public class TupleFrequency {
         this.frecuencia = frecuencia;
     }
 
-    public int getFrecuencia() {
+    public int getFrequency() {
         return this.frecuencia;
     }
 
@@ -40,11 +40,11 @@ public class TupleFrequency {
         this.cadena = cadena;
     }
 
-    public String getCadena() {
+    public String getString() {
         return this.cadena;
     }
 
     public int compareTo(TupleFrequency arg) {
-        return -Integer.compare(this.getFrecuencia(), arg.getFrecuencia());
+        return -Integer.compare(this.getFrequency(), arg.getFrequency());
     }
 }

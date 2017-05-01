@@ -16,53 +16,46 @@ public class HuffmanNode {
     private String string;
     private int frequency;
 
-    public HuffmanNode(HuffmanNode izquierda, HuffmanNode derecha, String cadena, int frecuencia) {
-        this.left = izquierda;
-        this.right = derecha;
-        this.string = cadena;
-        this.frequency = frecuencia;
+    public HuffmanNode(HuffmanNode left, HuffmanNode right, String string, int frequency) {
+        this.left = left;
+        this.right = right;
+        this.string = string;
+        this.frequency = frequency;
     }
 
-    public HuffmanNode getIzquierda() {
+    public HuffmanNode getLeft() {
         return left;
     }
 
-    public void setIzquierda(HuffmanNode izquierda) {
-        this.left = izquierda;
+    public void setIzquierda(HuffmanNode left) {
+        this.left = left;
     }
 
-    public HuffmanNode getDerecha() {
+    public HuffmanNode getRight() {
         return right;
     }
 
-    public void setDerecha(HuffmanNode derecha) {
-        this.right = derecha;
+    public void setRight(HuffmanNode right) {
+        this.right = right;
     }
 
-    public String getCadena() {
+    public String getString() {
         return string;
     }
 
-    public void setCadena(String cadena) {
-        this.string = cadena;
+    public void setString(String string) {
+        this.string = string;
     }
 
-    public int getFrecuencia() {
+    public int getFrequency() {
         return frequency;
     }
 
-    public void setFrecuencia(int frecuencia) {
-        this.frequency = frecuencia;
+    public void setFrecuencia(int frequency) {
+        this.frequency = frequency;
     }
 
     public int compareTo(HuffmanNode arg) {
-        return Integer.compare(this.getFrecuencia(), arg.getFrecuencia());
+        return Integer.compare(this.getFrequency(), arg.getFrequency());
     }
-
-    @Override
-    public String toString() {
-        return "NodoHuffman [izquierda=" + left + ", derecha=" + right + ", cadena=" + string + ", frecuencia="
-                + frequency + "]";
-    }
-
 }

@@ -2,6 +2,7 @@
 package hcdp;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,181 +22,183 @@ public class Compressor {
         125, 126, 161, 172, 176, 191, 193, 201, 205, 209, 211, 218, 220, 225, 233, 237, 241, 243, 250, 252, '�',
         '�', '�', '`', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�', '�'};
 
-    public HashMap<String, Integer> countFrequency(BufferedReader lectorLinea) throws IOException {
-        HashMap<String, Integer> frecuencias = new HashMap<>();
+    public HashMap<String, Integer> countFrequencies(String filePath) throws IOException {
+        FileReader lectorArchivo = new FileReader(filePath);
+        BufferedReader lineReader = new BufferedReader(lectorArchivo);
+        HashMap<String, Integer> frequencies = new HashMap<>();
 
-        String linea = "";
+        String line = "";
 
-        while ((linea = lectorLinea.readLine()) != null) {
+        while ((line = lineReader.readLine()) != null) {
 
             for (int i = 1; i <= 6; i++) {
-                for (int j = 0; j <= linea.length() - i; j++) {
-                    String substring = linea.substring(j, j + i);
-                    if (frecuencias.containsKey(substring)) {
-                        frecuencias.put(substring, frecuencias.get(substring) + 1);
+                for (int j = 0; j <= line.length() - i; j++) {
+                    String substring = line.substring(j, j + i);
+                    if (frequencies.containsKey(substring)) {
+                        frequencies.put(substring, frequencies.get(substring) + 1);
                     } else {
-                        frecuencias.put(substring, 1);
+                        frequencies.put(substring, 1);
                     }
                 }
             }
 
         }
 
-        return frecuencias;
+        return frequencies;
     }
 
-    public HuffmanNode generarArbol(HashMap<String, Integer> frequencies) {
+    public HuffmanNode generateTree(HashMap<String, Integer> frequencies) {
         Object[] keys = frequencies.keySet().toArray();
-        PriorityQueue<HuffmanNode> nodos = new PriorityQueue<>();
+        PriorityQueue<HuffmanNode> nodes = new PriorityQueue<>();
         for (int i = 0; i < keys.length; i++) {
 
             HuffmanNode node = new HuffmanNode(null, null, keys[i].toString(), frequencies.get(keys[i].toString()));
-            nodos.add(node);
+            nodes.add(node);
         }
 
         for (int i = 0; i < keys.length - 1; i++) {
-            HuffmanNode leftNode = nodos.poll();
-            HuffmanNode nodoDerecha = nodos.poll();
-            HuffmanNode nuevoNodo = new HuffmanNode(leftNode, nodoDerecha,
-                    leftNode.getCadena().concat(nodoDerecha.getCadena()),
-                    leftNode.getFrecuencia() + nodoDerecha.getFrecuencia());
-            nodos.add(nuevoNodo);
+            HuffmanNode leftNode = nodes.poll();
+            HuffmanNode rightNode = nodes.poll();
+            HuffmanNode nuevoNodo = new HuffmanNode(leftNode, rightNode,
+                    leftNode.getString().concat(rightNode.getString()),
+                    leftNode.getFrequency() + rightNode.getFrequency());
+            nodes.add(nuevoNodo);
         }
 
-        return nodos.poll();
+        return nodes.poll();
     }
 
-    public HashMap<String, String> generateTree(HuffmanNode arbol, String cadenaBinaria, HashMap<String, String> tablaBinaria) {
-        if (arbol.getIzquierda() == null && arbol.getDerecha() == null) {
-            tablaBinaria.put(arbol.getCadena(), cadenaBinaria);
+    public HashMap<String, String> generateBinaryTable(HuffmanNode tree, String binaryString, HashMap<String, String> binaryTable) {
+        if (tree.getLeft() == null && tree.getRight() == null) {
+            binaryTable.put(tree.getString(), binaryString);
         } else {
-            if (arbol.getIzquierda() != null) {
-                generateTree(arbol.getIzquierda(), cadenaBinaria + "0", tablaBinaria);
+            if (tree.getLeft() != null) {
+                generateBinaryTable(tree.getLeft(), binaryString + "0", binaryTable);
             }
-            if (arbol.getDerecha() != null) {
-                generateTree(arbol.getDerecha(), cadenaBinaria + "1", tablaBinaria);
+            if (tree.getRight() != null) {
+                generateBinaryTable(tree.getRight(), binaryString + "1", binaryTable);
             }
         }
-        return tablaBinaria;
+        return binaryTable;
     }
     
-    public void backtrack(int cortes[][], LinkedList<Integer> posiciones, int i, int j) {
+    public void backtrack(int cuts[][], LinkedList<Integer> positions, int i, int j) {
         if (i == j - 1) {
-            if (cortes[i][j] != j) {
-                posiciones.add(cortes[i][j]);
+            if (cuts[i][j] != j) {
+                positions.add(cuts[i][j]);
             }
         } else {
-            if (cortes[i][j] != j) {
-                posiciones.add(cortes[i][j]);
+            if (cuts[i][j] != j) {
+                positions.add(cuts[i][j]);
 
-                backtrack(cortes, posiciones, i, cortes[i][j]);
-                if (cortes[i][j] + 1 < cortes.length) {
-                    backtrack(cortes, posiciones, cortes[i][j] + 1, j);
+                backtrack(cuts, positions, i, cuts[i][j]);
+                if (cuts[i][j] + 1 < cuts.length) {
+                    backtrack(cuts, positions, cuts[i][j] + 1, j);
                 }
             }
         }
     }
     
-    public Code encode(String texto, HashMap<String, String> tabla) {
+    public Code encode(String text, HashMap<String, String> table) {
 
         // --------------- EXTRACCION OPTIMA ------------------------------
-        int optimizacion[][] = new int[texto.length()][texto.length()];
-        int cortesOptimos[][] = new int[texto.length()][texto.length()];
-        for (int i = 0; i < texto.length(); i++) {
-            optimizacion[i][i] = tabla.get(String.valueOf(texto.charAt(i))).length();
-            cortesOptimos[i][i] = i;
+        int optimization[][] = new int[text.length()][text.length()];
+        int optimalCuts[][] = new int[text.length()][text.length()];
+        for (int i = 0; i < text.length(); i++) {
+            optimization[i][i] = table.get(String.valueOf(text.charAt(i))).length();
+            optimalCuts[i][i] = i;
         }
-        for (int l = 2; l <= texto.length(); l++) {
-            for (int i = 0; i <= texto.length() - l; i++) {
+        for (int l = 2; l <= text.length(); l++) {
+            for (int i = 0; i <= text.length() - l; i++) {
                 int j = i + l - 1;
-                String subcadena = texto.substring(i, j + 1);
-                if (tabla.containsKey(subcadena)) {
-                    optimizacion[i][j] = tabla.get(subcadena).length();
+                String substring = text.substring(i, j + 1);
+                if (table.containsKey(substring)) {
+                    optimization[i][j] = table.get(substring).length();
                 } else {
-                    optimizacion[i][j] = Integer.MAX_VALUE;
+                    optimization[i][j] = Integer.MAX_VALUE;
                 }
-                cortesOptimos[i][j] = j;
+                optimalCuts[i][j] = j;
                 for (int k = j - 1; k >= i; k--) {
-                    int q = optimizacion[i][k] + optimizacion[k + 1][j];
-                    if (q < optimizacion[i][j]) {
-                        optimizacion[i][j] = q;
-                        cortesOptimos[i][j] = k;
+                    int q = optimization[i][k] + optimization[k + 1][j];
+                    if (q < optimization[i][j]) {
+                        optimization[i][j] = q;
+                        optimalCuts[i][j] = k;
                     }
                 }
             }
         }
-        LinkedList<Integer> cortes = new LinkedList<>();
-        cortes.add(texto.length() - 1);
-        backtrack(cortesOptimos, cortes, 0, texto.length() - 1);
+        LinkedList<Integer> cuts = new LinkedList<>();
+        cuts.add(text.length() - 1);
+        backtrack(optimalCuts, cuts, 0, text.length() - 1);
 
         // -----------------------------------------------------------------
-        StringBuilder codigo = new StringBuilder();
-        Iterator<Integer> it = cortes.listIterator();
-        PriorityQueue<Integer> ordenar = new PriorityQueue<>();
+        StringBuilder code = new StringBuilder();
+        Iterator<Integer> it = cuts.listIterator();
+        PriorityQueue<Integer> order = new PriorityQueue<>();
         while (it.hasNext()) {
-            ordenar.add(it.next());
+            order.add(it.next());
         }
-        int anterior = 0;
-        while (ordenar.size() > 0) {
-            int corte = ordenar.poll();
-            String cadena = texto.substring(anterior, corte + 1);
-            codigo.append(tabla.get(cadena));
-            anterior = corte + 1;
+        int previous = 0;
+        while (order.size() > 0) {
+            int cut = order.poll();
+            String string = text.substring(previous, cut + 1);
+            code.append(table.get(string));
+            previous = cut + 1;
         }
         // StringBuilder codigo = new StringBuilder();
         // for(int i = 0; i < texto.length(); i++) {
         // codigo.append(tabla.get(String.valueOf(texto.charAt(i))));
         // }
 
-        String codigoToCharArray = codigo.toString();
+        String codeToCharArray = code.toString();
 
         // El codigo quedara invertido
-        Code codigoObj = new Code(codigoToCharArray.length());
-        int cursorCodigo = 0;
-        int cursorArreglo = codigoObj.getDatos().length - 1;
+        Code codeObj = new Code(codeToCharArray.length());
+        int codeCursor = 0;
+        int arrayCursor = codeObj.getData().length - 1;
         int cursorBit = 0;
-        while (cursorCodigo < codigoToCharArray.length()) {
-            if (codigo.charAt(cursorCodigo) == '1') {
-                codigoObj.getDatos()[cursorArreglo] |= (1 << cursorBit);
+        while (codeCursor < codeToCharArray.length()) {
+            if (code.charAt(codeCursor) == '1') {
+                codeObj.getData()[arrayCursor] |= (1 << cursorBit);
                 cursorBit++;
             } else {
-                codigoObj.getDatos()[cursorArreglo] &= ~(1 << cursorBit);
+                codeObj.getData()[arrayCursor] &= ~(1 << cursorBit);
                 cursorBit++;
             }
             if (cursorBit > 7) {
                 cursorBit = 0;
-                cursorArreglo--;
+                arrayCursor--;
             }
-            cursorCodigo++;
+            codeCursor++;
         }
-        return codigoObj;
+        return codeObj;
     }
     
-     public HashMap<String, Integer> filtrarFrecuencias(HashMap<String, Integer> frecuencias, int numeroMapeos) {
+     public HashMap<String, Integer> filterFrequencies(HashMap<String, Integer> frequencies, int mapNumber) {
 
-        PriorityQueue<TupleFrequency> masFrecuentes = new PriorityQueue();
-        HashMap<String, Integer> filtrado = new HashMap<>();
+        PriorityQueue<TupleFrequency> moreFrequent = new PriorityQueue();
+        HashMap<String, Integer> filtered = new HashMap<>();
         for (char i : CHARACTERS) {
-            if (frecuencias.containsKey(String.valueOf(i))) {
-                filtrado.put(String.valueOf(i), frecuencias.get(String.valueOf(i)));
-                frecuencias.remove(String.valueOf(i));
+            if (frequencies.containsKey(String.valueOf(i))) {
+                filtered.put(String.valueOf(i), frequencies.get(String.valueOf(i)));
+                frequencies.remove(String.valueOf(i));
             } else {
-                filtrado.put(String.valueOf(i), 0);
+                filtered.put(String.valueOf(i), 0);
             }
 
         }
-        Iterator<String> frecs = frecuencias.keySet().iterator();
+        Iterator<String> frecs = frequencies.keySet().iterator();
         while (frecs.hasNext()) {
-            String cadena = frecs.next();
-            masFrecuentes.add(new TupleFrequency(cadena, frecuencias.get(cadena)));
+            String string = frecs.next();
+            moreFrequent.add(new TupleFrequency(string, frequencies.get(string)));
         }
 
-        for (int i = 0; i < numeroMapeos - CHARACTERS.length && masFrecuentes.size() > 0; i++) {
-            filtrado.put(masFrecuentes.peek().getCadena(), masFrecuentes.peek().getFrecuencia());
-            masFrecuentes.poll();
+        for (int i = 0; i < mapNumber - CHARACTERS.length && moreFrequent.size() > 0; i++) {
+            filtered.put(moreFrequent.peek().getString(), moreFrequent.peek().getFrequency());
+            moreFrequent.poll();
         }
 
-        return filtrado;
+        return filtered;
     }
      
     

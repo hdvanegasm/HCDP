@@ -15,56 +15,56 @@ import java.util.LinkedList;
  */
 public class Decompressor {
 
-    public String decodificarCodigoString(String codigo, HashMap<String, String> tabla) {
-        StringBuilder resultado = new StringBuilder();
-        int limiteInicial = 0;
-        while (limiteInicial < codigo.length()) {
-            for (int i = 1; i <= codigo.length(); i++) {
-                String fraccionCodigo = codigo.substring(limiteInicial, limiteInicial + i);
-                if (tabla.containsKey(fraccionCodigo)) {
-                    resultado.append(tabla.get(fraccionCodigo));
-                    limiteInicial += i;
+    public String decodeStringCode(String code, HashMap<String, String> table) {
+        StringBuilder result = new StringBuilder();
+        int initialLimit = 0;
+        while (initialLimit < code.length()) {
+            for (int i = 1; i <= code.length(); i++) {
+                String codeFraction = code.substring(initialLimit, initialLimit + i);
+                if (table.containsKey(codeFraction)) {
+                    result.append(table.get(codeFraction));
+                    initialLimit += i;
                     break;
                 }
             }
         }
-        return resultado.toString();
+        return result.toString();
     }
 
-    public String decodificar(Code codigo, HashMap<String, String> tabla) {
-        StringBuilder codigoStr = new StringBuilder();
-        int cursorCodigo = 0;
-        int cursorArreglo = codigo.getDatos().length - 1;
+    public String decode(Code code, HashMap<String, String> table) {
+        StringBuilder codeStr = new StringBuilder();
+        int codeCursor = 0;
+        int arrayCursor = code.getData().length - 1;
         int cursorBit = 0;
-        while (cursorCodigo < codigo.getNumeroBits()) {
-            if ((codigo.getDatos()[cursorArreglo] & (1 << cursorBit)) != 0) {
-                codigoStr.append("1");
+        while (codeCursor < code.getNumeroBits()) {
+            if ((code.getData()[arrayCursor] & (1 << cursorBit)) != 0) {
+                codeStr.append("1");
                 cursorBit++;
             } else {
-                codigoStr.append("0");
+                codeStr.append("0");
                 cursorBit++;
             }
             if (cursorBit > 7) {
                 cursorBit = 0;
-                cursorArreglo--;
+                arrayCursor--;
             }
-            cursorCodigo++;
+            codeCursor++;
         }
-        return decodificarCodigoString(codigoStr.toString(), tabla);
+        return decodeStringCode(codeStr.toString(), table);
     }
     
-    private static HashMap<String, String> generarTablaDecodificacion(HashMap<String, String> tablaBinariaCodificar) {
+    public static HashMap<String, String> generateDecodeTable(HashMap<String, String> binaryTableEncode) {
 
         // Genera la tabla para la decodificacion (Tomar en cuenta que para una
         // palabra solo hay un codigo, es decir, hay una
         // biyeccion entre el conjunto de palabras y el conjunto de codigos)
-        HashMap<String, String> tablaDecodificacion = new HashMap<String, String>();
-        Iterator<String> iterador = tablaBinariaCodificar.keySet().iterator();
-        while (iterador.hasNext()) {
-            String palabra = iterador.next();
-            String codigo = tablaBinariaCodificar.get(palabra);
-            tablaDecodificacion.put(codigo, palabra);
+        HashMap<String, String> decodificationTable = new HashMap<String, String>();
+        Iterator<String> iterator = binaryTableEncode.keySet().iterator();
+        while (iterator.hasNext()) {
+            String word = iterator.next();
+            String code = binaryTableEncode.get(word);
+            decodificationTable.put(code, word);
         }
-        return tablaDecodificacion;
+        return decodificationTable;
     }
 }
