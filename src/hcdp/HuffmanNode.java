@@ -9,7 +9,7 @@ package hcdp;
  *
  * @author Admin
  */
-public class HuffmanNode {
+public class HuffmanNode implements Comparable<HuffmanNode>{
 
     private HuffmanNode left;
     private HuffmanNode right;

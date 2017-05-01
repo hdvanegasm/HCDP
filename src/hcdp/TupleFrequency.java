@@ -9,7 +9,7 @@ package hcdp;
  *
  * @author Admin
  */
-public class TupleFrequency {
+public class TupleFrequency implements Comparable<TupleFrequency>{
 
     private String cadena;
     private int frecuencia;
@@ -44,6 +44,7 @@ public class TupleFrequency {
         return this.cadena;
     }
 
+    @Override
     public int compareTo(TupleFrequency arg) {
         return -Integer.compare(this.getFrequency(), arg.getFrequency());
     }

@@ -91,7 +91,7 @@ public class BenchmarkHCDP {
                 long t1 = System.currentTimeMillis();
                 Code code = compressor.encode(text, binaryTableEncode);
                 long t2 = System.currentTimeMillis();
-                double compressionRatio = ((code.getData().length * 1.0 * 8 + 32) / (text.length() * 8)) * 100.0;
+                double compressionRatio = ((code.getData().length * 1.0 * 8) / (text.length() * 8)) * 100.0;
                 System.out.println("Compression Ratio: " + compressionRatio
                         + " - Compression Time: " + (t2 - t1));
                 numberOfBlocks++;

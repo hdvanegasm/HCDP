@@ -37,11 +37,14 @@ public class Main {
 
         // Compressed text
         Code encodedText = compressor.encode(text, binaryTableEncode);
-
+        System.out.println("Compression Successful");
         // Decode
         Decompressor decompressor = new Decompressor();
         HashMap<String, String> decodeTable = decompressor.generateDecodeTable(binaryTableEncode);
         String decodedText = decompressor.decode(encodedText, decodeTable);
+        System.out.println("Bits before compression: " + (text.length() * 8));
+        System.out.println("Bits after compression: " + encodedText.getData().length);
+        System.out.println("Compressed text: " + decodedText);
     }
 
 }
