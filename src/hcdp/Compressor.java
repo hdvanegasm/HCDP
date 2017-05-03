@@ -145,10 +145,7 @@ public class Compressor {
             code.append(table.get(string));
             previous = cut + 1;
         }
-        // StringBuilder codigo = new StringBuilder();
-        // for(int i = 0; i < texto.length(); i++) {
-        // codigo.append(tabla.get(String.valueOf(texto.charAt(i))));
-        // }
+        
 
         String codeToCharArray = code.toString();
 

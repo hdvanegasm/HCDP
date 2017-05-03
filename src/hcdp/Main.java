@@ -44,7 +44,7 @@ public class Main {
         String decodedText = decompressor.decode(encodedText, decodeTable);
         System.out.println("Bits before compression: " + (text.length() * 8));
         System.out.println("Bits after compression: " + encodedText.getData().length);
-        System.out.println("Compressed text: " + decodedText);
+        System.out.println("Compressed text: " + decodedText);        
     }
 
 }

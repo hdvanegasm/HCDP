@@ -11,37 +11,37 @@ package hcdp;
  */
 public class TupleFrequency implements Comparable<TupleFrequency>{
 
-    private String cadena;
-    private int frecuencia;
+    private String string;
+    private int frequency;
 
-    public TupleFrequency(String cadena, int frecuencia) {
-        this.cadena = cadena;
-        this.frecuencia = frecuencia;
+    public TupleFrequency(String string, int frequency) {
+        this.string = string;
+        this.frequency = frequency;
     }
 
     public void incrFrec() {
-        this.frecuencia++;
+        this.frequency++;
     }
 
     @Override
     public String toString() {
-        return "TuplaFrec [cadena=" + cadena + ", frecuencia=" + frecuencia + "]";
+        return "TuplaFrec [cadena=" + string + ", frecuencia=" + frequency + "]";
     }
 
-    public void setFrecuencia(int frecuencia) {
-        this.frecuencia = frecuencia;
+    public void setFrecuency(int frequency) {
+        this.frequency = frequency;
     }
 
     public int getFrequency() {
-        return this.frecuencia;
+        return this.frequency;
     }
 
-    public void setCadena(String cadena) {
-        this.cadena = cadena;
+    public void setString(String string) {
+        this.string = string;
     }
 
     public String getString() {
-        return this.cadena;
+        return this.string;
     }
 
     @Override
