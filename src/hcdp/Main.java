@@ -22,7 +22,7 @@ public class Main {
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
 
-        String filePath = "Put file path here";
+        String filePath = "Put the dictionary file path here";
         int dictionarySize = 4096;
 
         // Frequency counting
@@ -33,17 +33,19 @@ public class Main {
 
         HashMap<String, String> binaryTableEncode = compressor.generateBinaryTable(generatedTree, new String(""), new HashMap<String, String>());
 
-        String text = "Put text to encode here";
+        String text = "Put the text here";
 
         // Compressed text
         Code encodedText = compressor.encode(text, binaryTableEncode);
         System.out.println("Compression Successful");
+        
         // Decode
         Decompressor decompressor = new Decompressor();
         HashMap<String, String> decodeTable = decompressor.generateDecodeTable(binaryTableEncode);
         String decodedText = decompressor.decode(encodedText, decodeTable);
-        System.out.println("Bits before compression: " + (text.length() * 8));
-        System.out.println("Bits after compression: " + encodedText.getData().length);
+        System.out.println("Bits before compression: " + (text.length() * 16));
+        System.out.println("Bits after compression: " + (encodedText.getData().length * 16 + 32));
+        System.out.println("Compression ratio: " + ((encodedText.getData().length * 16.0 + 32) / (text.length() * 16)));
         System.out.println("Compressed text: " + decodedText);        
     }
 
